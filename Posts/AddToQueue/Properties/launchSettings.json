@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "AddToQueue": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7113"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "containerRunArguments": "--init",
+      "httpPort": 34961,
+      "useSSL": false
+    }
+  }
+}

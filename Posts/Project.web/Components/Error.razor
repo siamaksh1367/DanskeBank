@@ -1,0 +1,12 @@
+﻿@code {
+    [Parameter]
+    public Exception exception { get; set; }
+    [Parameter]
+    public EventCallback OnHandle { get; set; }
+  
+    protected override async Task OnInitializedAsync()
+    {
+        await OnHandle.InvokeAsync();
+        ToastService.ShowError($"en error has occured: {exception.Message}");
+    }
+}

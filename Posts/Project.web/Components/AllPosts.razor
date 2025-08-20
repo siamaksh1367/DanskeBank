@@ -1,0 +1,19 @@
+﻿@if (Posts.Count() != 0)
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var post in Posts)
+            {
+                <div class="col-12 col-sm-6 col-md-4 mb-4">
+                    <PostCard GetPostResponse="post" />
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <NoContent Text="No post to be shown!"></NoContent>
+}
+
+

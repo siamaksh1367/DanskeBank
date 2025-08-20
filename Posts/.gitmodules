@@ -1,0 +1,6 @@
+[submodule "Project.web"]
+	path = Project.web
+	url = https://github.com/siamaksh1367/Project.web.git
+[submodule "Project.api"]
+	path = Project.api
+	url = https://github.com/siamaksh1367/Project.api.git

@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@typeparam RowDataType
+@typeparam RowEditType
+@if (Rows != null && Rows.Count != 0)
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                @foreach (var header in Headers)
+                {
+                    <th>@header</th>
+                }
+                @if (ShowActions)
+                {
+                    <AuthorizeView Roles="admin">
+                        <Authorized>
+                            <th class="text-end">Actions</th>
+                        </Authorized>
+                    </AuthorizeView>
+
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rowWithEditFlag in _rowsWithEditFlag)
+            {
+                <tr>
+                    @if (rowWithEditFlag.EditMode)
+                    {
+                        @foreach (var column in RowDataColumns)
+                        {
+                            var columningResult = column(rowWithEditFlag.Data);
+                            var editProperty = _rowEditTypeColumns.FirstOrDefault(x => x.Name == columningResult.EditPropertyName);
+                            if (columningResult.Editable && columningResult.Type.ToLower() == "text")
+                            {
+                                <AuthorizeView Roles="admin">
+                                    <Authorized>
+                                        <td>
+                                            <input class="form-control"
+                                                   value="@(columningResult.Value.ToString())"
+                                                   @oninput="@((e) => SetStringPropertyValue(editProperty , e.Value.ToString()))" />
+
+                                        </td>
+                                    </Authorized>
+                                </AuthorizeView>
+                            }
+                            else
+                            {
+                                <td>@columningResult.Value</td>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var column in RowDataColumns)
+                        {
+                            <td>@column(rowWithEditFlag.Data).Value.ToString()</td>
+                        }
+                    }
+                    @if (ShowActions)
+                    {
+                        <AuthorizeView Roles="admin">
+                            <Authorized>
+                                <td class="text-end">
+                                    @if (rowWithEditFlag.EditMode)
+                                    {
+                                        <button class="btn btn-primary btn-sm ms-2" @onclick="() => Cancel_Editing()">Cancel</button>
+                                        <button class="btn btn-danger btn-sm ms-2" @onclick="() => Update_Handling(RowEditItem)">update</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary btn-sm ms-2" @onclick="() => Start_Editing(rowWithEditFlag)">Edit</button>
+                                    }
+                                    <button class="btn btn-danger btn-sm ms-2" @onclick="() => Delete_Handling(rowWithEditFlag.Data)">Delete</button>
+                                </td>
+                            </Authorized>
+                        </AuthorizeView>
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+

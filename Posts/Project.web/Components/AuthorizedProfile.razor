@@ -1,0 +1,9 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<div class="d-flex align-items-center" style="cursor: pointer;" @onclick="LogOut_ClickHandlerAsync">
+    <img src=@UserProfilePicture alt="User Profile" class="rounded-circle me-2 ">
+    <span class="navbar-text">@UserName</span>
+</div>
+
+

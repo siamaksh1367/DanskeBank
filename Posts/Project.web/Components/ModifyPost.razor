@@ -1,0 +1,131 @@
+﻿@page "/create-post"
+@using Blazored.TextEditor
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@inject NavigationManager NavigationManager
+
+
+@if (_isloading)
+{
+    <Waiting text="Loading editor..."></Waiting>
+}
+else
+{
+    <div class="container mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="mb-2">Create Post</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <InputFile id="image" class="form-control" OnChange="HandleImageUpload" />
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(_imagePreviewUrl))
+                {
+                    <div class="col-3">
+                        <img src="@_imagePreviewUrl" alt="Uploaded Image" style="max-width: 100px; max-height: 100px; height: auto; width: auto;" />
+                    </div>
+                }
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <InputText id="title" class="form-control" @bind-Value="_createPostCommand.Title" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" class="form-select" @bind="_createPostCommand.CategoryId">
+                            <option value="">Select a category</option>
+                            @foreach (var category in _categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags</label>
+                    <TagManager 
+                        Tags="_tags" 
+                        SelectedTags="_selectedTags"
+                        CreatingTagsSelected_Handler="CreatingTagsSelected_Handling" 
+                        ExistingTagsSelected_Handler="ExistingTagsSelected_Handling" 
+                        TagDeleted_Handler="TagDeleted_Handling"></TagManager>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="body" class="form-label">Body</label>
+                        <BlazoredTextEditor @ref="@_blazoredTextEditor" Placeholder="Enter non HTML format like centering...">
+                            <ToolbarContent>
+                                <span class="ql-formats">
+                                    <select class="ql-font">
+                                        <option selected=""></option>
+                                        <option value="serif"></option>
+                                        <option value="monospace"></option>
+                                    </select>
+                                    <select class="ql-size">
+                                        <option value="small"></option>
+                                        <option selected=""></option>
+                                        <option value="large"></option>
+                                        <option value="huge"></option>
+                                    </select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                    <button class="ql-indent" value="-1"></button>
+                                    <button class="ql-indent" value="+1"></button>
+                                    <select class="ql-align">
+                                        <option selected=""></option>
+                                        <option value="center"></option>
+                                        <option value="right"></option>
+                                        <option value="justify"></option>
+                                    </select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-link"></button>
+                                </span>
+                            </ToolbarContent>
+                        <EditorContent>
+                            @if (GetPostResponse != null)
+                            {
+                                @((MarkupString)_createPostCommand.Content)
+                            }
+                        </EditorContent> 
+                        </BlazoredTextEditor>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button" @onclick="Save_Handler" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+    </div>
+}
+

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <Title>Create Query Pattern</Title>
+    <Shortcut>query</Shortcut>
+    <Description>Generates a record, validator, handler, and response classes for a query.</Description>
+    <Author>Siamak</Author>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <!-- Placeholder for the type name (e.g., Tag) -->
+      <Literal>
+        <ID>QueryName</ID>
+        <ToolTip>Enter the query name (e.g., Tag)</ToolTip>
+        <Default>Tag</Default>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp">
+      <![CDATA[
+public class $QueryName$Query : IQuery<$QueryName$Response>
+{
+}
+
+public sealed class $QueryName$QueryValidator : AbstractValidator<$QueryName$Query>
+{
+}
+
+public sealed class $QueryName$QueryHandler : IQueryHandler<$QueryName$Query, $QueryName$Response>
+{
+    public Task<$QueryName$Response> Handle($QueryName$Query request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class $QueryName$Response
+{
+}
+
+public class $QueryName$QueryMappingProfile : Profile
+    {
+        public $QueryName$QueryMappingProfile()
+        {
+           
+        }
+    }
+]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>

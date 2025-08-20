@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Project.Application.MainPage"
+             xmlns:comp="clr-namespace:Project.Application.Components"
+             xmlns:vm="clr-namespace:Project.Application.ViewModels"
+             x:DataType="vm:MainPageViewModel">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <comp:Browse BindingContext="{Binding BrowseViewModel}" Grid.Row="0" Padding="20"/>
+        <ScrollView Grid.Row="1">
+            <comp:WordsList BindingContext="{Binding WordsListViewModel}" />
+        </ScrollView>
+    </Grid>
+</ContentPage>

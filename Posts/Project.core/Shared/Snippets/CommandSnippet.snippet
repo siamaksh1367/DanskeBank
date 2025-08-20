@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <Title>Create Command Pattern</Title>
+    <Shortcut>command</Shortcut>
+    <Description>Generates a record, validator, handler, and response classes for a command.</Description>
+    <Author>Siamak</Author>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <!-- Placeholder for the type name (e.g., Tag) -->
+      <Literal>
+        <ID>CommandName</ID>
+        <ToolTip>Enter the command name (e.g., Tag)</ToolTip>
+        <Default>Tag</Default>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp">
+      <![CDATA[
+public class $CommandName$Command : ICommand<$CommandName$Response>
+{
+}
+
+public sealed class $CommandName$CommandValidator : AbstractValidator<$CommandName$Command>
+{
+}
+
+public sealed class $CommandName$CommandHandler : ICommandHandler<$CommandName$Command, $CommandName$Response>
+{
+    public Task<$CommandName$Response> Handle($CommandName$Command request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class $CommandName$Response
+{
+}
+
+public class $CommandName$CommandMappingProfile : Profile
+    {
+        public $CommandName$CommandMappingProfile()
+        {
+           
+        }
+    }
+]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>

@@ -1,0 +1,125 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: VCR_DataBase
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=yourStrong(!)Password
+    ports:
+      - "1433:1433"
+    user: root
+    volumes:
+      - ./volume/db:/var/opt/mssql/data
+    networks:
+      - app-network
+
+  dev:
+    container_name: VCR_DataBase_Generator
+    build:
+      context: .
+      dockerfile: Project.dev/Dockerfile
+    environment:
+      - SQLConnectionString__ConnectionString=Server=sqlserver,1433;Database=ProjectDB;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
+    entrypoint: ["bash", "-c"]
+    command: >
+      "dotnet tool restore &&
+       dotnet ef database update --project Project.dev"
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
+
+  api:    
+    container_name: VCR_API
+    image: ${DOCKER_REGISTRY-}Projectapi
+    build:
+      context: .
+      dockerfile: Project.api/Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MyPass1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/aspnetapp.pfx
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:8080
+      - SQLConnectionString__ConnectionString=Server=sqlserver,1433;Database=ProjectDB;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True
+      - StorageConnectionString__ConnectionString=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+      - OktaServer__Authority=https://dev-uct7p4or1fa0cwym.us.auth0.com/
+      - OktaServer__Audience=https://localhost:7204/
+    ports:
+      - "7203:8080"
+      - "7204:443"
+    networks:
+      - app-network
+
+  web:
+    container_name: VCR_Client
+    build:
+      context: .
+      dockerfile: Project.web/Dockerfile  # Path to your Blazor app's Dockerfile
+    ports:
+      - "7125:80"  # Expose the Blazor app on the desired port
+      - "443:443"  # Expose HTTPS as well
+    volumes:
+      - ./cert.pem:/etc/ssl/certs/cert.pem
+      - ./key.pem:/etc/ssl/private/key.pem
+    networks:
+      - app-network
+    depends_on:
+      - api
+    restart: always
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    restart: always
+    volumes:
+      - ./volume/azurite:/data
+    command: azurite --loose -l /data --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --debug /data/debug.log
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    networks:
+      - app-network
+
+  addtoqueue:
+    container_name: VCR_Message_Producer
+    build:
+      context: .
+      dockerfile: AddToQueue/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - StorageConnectionString__ConnectionString=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+      - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+    depends_on:
+      - azurite
+    networks:
+      - app-network
+  
+  # readfromqueue:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8082:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - StorageConnectionString__ConnectionString=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+  #     - AzureWebJobsScriptRoot=/home/site/wwwroot
+  #     - AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+  #   volumes:
+  #     - ./volume/azurite:/home/site/wwwroot
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db:          
+  content:    

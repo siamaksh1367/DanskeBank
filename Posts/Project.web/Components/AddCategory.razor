@@ -1,0 +1,47 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+<EditForm Model="@_createCategoryCommand" OnValidSubmit="AddCategory_Handling">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="container mt-5">
+        <AuthorizeView Roles="admin">
+            <Authorized Context="authContext">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="mb-2">Add Category</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <InputText id="categoryName" class="form-control" @bind-Value="@_createCategoryCommand.Name" required />
+                            <ValidationMessage For="@(() => _createCategoryCommand.Name)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label">Description</label>
+                            <InputTextArea id="categoryDescription" class="form-control" @bind-Value="@_createCategoryCommand.Description" required />
+                            <ValidationMessage For="@(() => _createCategoryCommand.Description)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">  <button type="submit" class="btn btn-primary">Add Category</button></div>
+                </div>
+
+            </Authorized>
+            <NotAuthorized Context="authContext">
+                <div class="row d-flex align-items-center justify-content-center" style="height: 100px;">
+                    <div class="col text-center">
+                        <p>You are not allowed to add category</p>
+                    </div>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</EditForm>
+

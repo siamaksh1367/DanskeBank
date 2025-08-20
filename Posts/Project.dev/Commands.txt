@@ -1,0 +1,2 @@
+﻿dotnet ef migrations add InitialCreate --project Project.dal  --startup-project Project.dev
+dotnet ef database update --project Project.dev

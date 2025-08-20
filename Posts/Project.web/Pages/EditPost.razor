@@ -1,0 +1,11 @@
+﻿@page "/posts/edit/{id:int}"
+@using Project.web.Components
+@layout BackedLayout;
+@if (_isLoading)
+{
+    <Waiting text="Loading post..."></Waiting>
+}
+else
+{
+    <ModifyPost GetPostResponse="_post"></ModifyPost>
+}

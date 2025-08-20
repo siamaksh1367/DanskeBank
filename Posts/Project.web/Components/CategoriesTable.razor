@@ -1,0 +1,25 @@
+﻿@using Project.core.Commands.UpdateCategory
+@using Project.core.Queries.GetCategories
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h3>All categories</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <Table Headers="@_headers"
+                   RowEditItem="@_updateCategoryCommand"
+                   RowDataType="GetCategoryResponse"
+                   RowEditType="UpdateCategoryCommand"
+                   Rows="@Categories.OrderBy(x=>x.Name).ToList()"
+                   ShowActions="true"
+                   RowDataColumns="@_rowDataColumns"
+                   Delete_Handler="(x)=>DeleteCategory_Handling(x)"
+                   Update_Handler="(x)=>UpdateCategory_Handling(x)"></Table>
+        </div>
+    </div>
+</div>
+
+
+

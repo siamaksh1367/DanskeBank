@@ -1,0 +1,6 @@
+[submodule "Project.Api"]
+	path = Project.Api
+	url = https://github.com/siamaksh1367/Project.Api
+[submodule "Project.Web"]
+	path = Project.Web
+	url = https://github.com/siamaksh1367/Project.Web

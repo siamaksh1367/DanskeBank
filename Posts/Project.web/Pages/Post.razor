@@ -1,0 +1,13 @@
+﻿@page "/post/{id:int}"
+@using Project.web.Components
+@layout BackedLayout;
+@if (_isLoading)
+{
+<Waiting text="Loading post..."></Waiting>    
+}
+else
+{
+    <ShowPost Post="_post"></ShowPost>
+    <CommentManager Comments="_commentt" CreateCommand_Handler="CreateComment_handling" PostId="_post.Id" ></CommentManager>
+}
+
